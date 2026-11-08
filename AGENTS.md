@@ -2,9 +2,10 @@
 
 ## Status and purpose
 
-This project currently contains foundation documentation only. Every source
-file, configuration file, dependency, and command below is planned until the
-code skeleton is implemented. Do not report checks as passing before they exist.
+The package skeleton, development configuration, and lockfile are implemented.
+The CLI prints a readiness message and supports `--help`. Tokenization, models,
+data, and automated tests are still planned. Do not report checks as passing
+before they exist.
 
 Build a tiny character-level language model to learn how GPT-style models work.
 Work through one understandable lesson at a time: tokenization, character
@@ -23,9 +24,8 @@ Python; do not introduce pretrained models or high-level training frameworks.
 - Use Python `>=3.14,<3.15`; pin the selected installed patch in
   `.python-version`. Python 3.14.4 is the available initial interpreter.
 - Use uv for environment management, dependency changes, execution, and builds.
-  The planned tooling baseline is uv 0.13.7 with
-  `uv_build>=0.13.7,<0.14` as the build backend. Updating the existing uv
-  installation belongs to the subsequent scaffolding work.
+  Require uv 0.13.7 or newer and use `uv_build>=0.13.7,<0.14` as the build
+  backend.
 - Start with no runtime dependencies. Use the standard library for tokenization,
   file handling, argument parsing, and the counting model.
 - Put Ruff 0.17.4, Pyrefly 1.4.1, and pytest 9.2.0 in the `dev` dependency group,
@@ -43,29 +43,31 @@ Python; do not introduce pretrained models or high-level training frameworks.
 
 ## Layout and ownership
 
-Only `AGENTS.md`, `CLAUDE.md`, and `README.md` exist at this stage. The intended
-layout below is a placement guide, not an instruction to create empty modules.
+The layout below distinguishes implemented files from future lesson modules.
+Create the planned files only when a lesson needs them.
 
 ```text
 tiny-llm/
   AGENTS.md
   CLAUDE.md                 # Relative symlink to AGENTS.md
   README.md
-  pyproject.toml            # Planned project and tool configuration
-  uv.lock                   # Planned resolved dependencies
-  .python-version           # Planned interpreter pin
-  .gitignore                # Planned exclusions
+  pyproject.toml            # Project and tool configuration
+  uv.lock                   # Resolved dependencies
+  .python-version           # Interpreter pin
+  .gitignore                # Exclusions
   src/tiny_llm/
     __init__.py              # Package marker; no work at import time
     __main__.py              # CLI entry point
-    tokenizer.py             # First lesson: vocabulary, encode, decode
+    tokenizer.py             # Planned first lesson: vocabulary, encode, decode
     bigram.py                # Later: counting and next-character probabilities
     model.py                 # Later: neural model and causal attention
     train.py                 # Later: batches, loss, and parameter updates
     generate.py              # Later: autoregressive sampling
-  tests/                     # test_<owning_module>.py
-  data/                      # Small, explicitly selected text corpora
-  runs/                      # Ignored generated output and checkpoints
+  tests/
+    README.md                # Test conventions; no automated tests yet
+    test_tokenizer.py        # Planned first lesson tests
+  data/                      # Planned small, explicitly selected text corpora
+  runs/                      # Future ignored generated output and checkpoints
 ```
 
 Create a module when its lesson needs it. Keep related functions together; do
@@ -149,9 +151,10 @@ generation. Tests enforce each behavior when its lesson is implemented.
 
 ## Verification
 
-All commands in this section are planned. During scaffolding, generate the first
-lockfile with `uv lock`, then use `uv sync --locked` to create the environment.
-After the package and lockfile exist, run from the repository root:
+Run `uv sync --locked` from the repository root to create or synchronize the
+environment. Run the following commands from the same directory. The pytest
+command currently exits with code 5 because lesson tests do not exist yet;
+record that outcome as no tests collected, not a passing test suite.
 
 ```sh
 uv run --locked python -m tiny_llm

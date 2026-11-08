@@ -7,23 +7,29 @@ and automatic gradients; we will write the model, training, and generation.
 
 ## Current state
 
-This directory contains foundation docs only. The Python package, configuration,
-lockfile, dependencies, and tests have not been scaffolded. The first feature
-will encode characters as integer IDs and decode them back to the original text.
+The Python package and development tools are ready. Running the package prints
+a workspace readiness message. The first lesson, the character tokenizer, is
+next; no model or training code is implemented yet.
 
-## Planned development setup
+## Development
 
-Use Python 3.14 and uv. The planned baseline is uv 0.13.7, uv_build 0.13.7,
-Ruff 0.17.4, Pyrefly 1.4.1, and pytest 9.2.0. Python 3.14.4 is already available
-locally. The initial code will use only the standard library; add PyTorch when
-the neural-network lessons begin.
-
-After scaffolding has created `pyproject.toml`, the package, and `uv.lock`,
-these commands will be available from this directory:
+Use Python 3.14.4 and uv 0.13.7 or newer. uv will obtain the pinned Python version
+if it is not available locally. From the repository root:
 
 ```sh
 uv sync --locked
 uv run --locked python -m tiny_llm
+uv run --locked python -m tiny_llm --help
+```
+
+Dependencies are locked in `uv.lock`. Ruff formats and lints the code, Pyrefly
+checks types, and pytest will run the lesson tests. Runtime code currently uses
+only the standard library; PyTorch will be added for the neural lessons.
+
+Point your editor at `.venv` and use the project-installed Pyrefly for type
+checking so editor diagnostics match the command-line checks.
+
+```sh
 uv run --locked ruff format --check .
 uv run --locked ruff check .
 uv run --locked pyrefly check
@@ -31,9 +37,13 @@ uv run --locked pytest
 uv build
 ```
 
-Tests become available with the first implemented feature. Source code will
-live in `src/tiny_llm/`, tests in `tests/`, small text datasets in `data/`, and
-generated results in ignored `runs/`. Run locally on CPU to begin.
+There are no automated tests yet: pytest currently reports no tests collected
+and exits with code 5. Tests will arrive with the tokenizer lesson. To apply
+formatting, run `uv run --locked ruff format .`.
+
+Source code lives in `src/tiny_llm/`, and `tests/` is ready for the first lesson.
+Add small text datasets under `data/` when needed; generated results belong in
+ignored `runs/`. Run locally on CPU to begin.
 
 See [AGENTS.md](AGENTS.md) for the engineering conventions. `CLAUDE.md` links to
 the same instructions.
