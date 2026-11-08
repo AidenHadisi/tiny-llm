@@ -2,10 +2,11 @@
 
 ## Status and purpose
 
-The package, character tokenizer, and tokenizer tests are implemented. The CLI
-demonstrates vocabulary construction, encoding, and decoding, and supports
-`--help`. Models, external datasets, and training remain future lessons. Do not
-report checks as passing before they exist.
+The package, character tokenizer, bigram counts and probabilities, and their
+tests are implemented. The CLI demonstrates encoding, decoding, pair counts,
+and next-token probabilities, and supports `--help`. Generation, neural models,
+external datasets, and training remain future lessons. Do not report checks as
+passing before they exist.
 
 Build a tiny character-level language model to learn how GPT-style models work.
 Work through one understandable lesson at a time: tokenization, character
@@ -59,12 +60,13 @@ tiny-llm/
     __init__.py              # Package marker; no work at import time
     __main__.py              # CLI entry point
     tokenizer.py             # Vocabulary, encode, decode
-    bigram.py                # Later: counting and next-character probabilities
+    bigram.py                # Token-pair counts and probabilities
     model.py                 # Later: neural model and causal attention
     train.py                 # Later: batches, loss, and parameter updates
     generate.py              # Later: autoregressive sampling
   tests/
     test_tokenizer.py        # Tokenizer behavioral tests
+    test_bigram.py           # Count and probability behavioral tests
   data/                      # Planned small, explicitly selected text corpora
   runs/                      # Future ignored generated output and checkpoints
 ```

@@ -7,11 +7,12 @@ and automatic gradients; we will write the model, training, and generation.
 
 ## Current state
 
-The first lesson is a character tokenizer. It builds a fixed vocabulary from
-`anna`, `bob`, and `ava`, then translates text into integer IDs and back. There
-is no model or training code yet.
+The character tokenizer builds a fixed vocabulary from `anna`, `bob`, and
+`ava`, then translates text into integer IDs and back. The bigram counter now
+counts adjacent token pairs and converts those counts into next-token
+probabilities. Generation and neural training remain future lessons.
 
-Running the package demonstrates the mapping:
+Running the package first demonstrates the mapping:
 
 ```text
 Vocabulary: {0: '.', 1: 'a', 2: 'b', 3: 'n', 4: 'o', 5: 'v'}
@@ -28,6 +29,64 @@ invalid token IDs raise `ValueError`; encoding never grows the vocabulary.
 Read `src/tiny_llm/tokenizer.py` in order: vocabulary construction, encoding,
 then decoding. The tests in `tests/test_tokenizer.py` show the expected behavior
 with small examples.
+
+## Bigram counts
+
+The CLI wraps each name with boundaries and encodes it separately. For example,
+`.anna.` becomes `[0, 1, 3, 3, 1, 0]`, with overlapping pairs
+`(0, 1), (1, 3), (3, 3), (3, 1), (1, 0)`.
+
+`count_bigrams` in `src/tiny_llm/bigram.py` takes these separate sequences of
+IDs and returns a standard-library `Counter`. Each pair is a key; its value is
+the number of observations. Missing pairs have count zero. The function adds no
+boundaries and makes no pairs between names. Empty or single-token sequences
+contribute no pairs.
+
+After the tokenizer output, the demo prints:
+
+```text
+Bigram counts (current -> next):
+. -> a: 2
+. -> b: 1
+a -> .: 2
+a -> n: 1
+a -> v: 1
+b -> .: 1
+b -> o: 1
+n -> a: 1
+n -> n: 1
+o -> b: 1
+v -> a: 1
+Total pairs: 13
+```
+
+For example, `a -> .` appears twice because both `anna` and `ava` end in
+`a`. Counts are observations, not probabilities yet. Tests in
+`tests/test_bigram.py` check the exact counts, overlapping pairs, separate
+sequences, repeated observations, and empty inputs.
+
+## Next-token probabilities
+
+`next_token_probabilities(counts, current_id)` in `src/tiny_llm/bigram.py`
+selects pairs starting with the current token, sums their counts, and divides
+each count by that sum. It returns a dictionary of next-token IDs to
+probabilities without changing the counts. Missing next tokens have probability
+zero; no smoothing is applied. A token with no outgoing observations raises
+`ValueError`, as do negative outgoing counts.
+
+After `a`, we observed `.` twice, `n` once, and `v` once: four observations.
+The demo prints:
+
+```text
+Next-character probabilities after 'a':
+a -> .: 50%
+a -> n: 25%
+a -> v: 25%
+```
+
+The denominator is the total after `a` (4), not the total across all pairs (13).
+The tests check all six current tokens against hand-calculated probabilities,
+verify each distribution sums to one, and cover missing or invalid observations.
 
 ## Development
 
