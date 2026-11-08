@@ -2,10 +2,10 @@
 
 ## Status and purpose
 
-The package skeleton, development configuration, and lockfile are implemented.
-The CLI prints a readiness message and supports `--help`. Tokenization, models,
-data, and automated tests are still planned. Do not report checks as passing
-before they exist.
+The package, character tokenizer, and tokenizer tests are implemented. The CLI
+demonstrates vocabulary construction, encoding, and decoding, and supports
+`--help`. Models, external datasets, and training remain future lessons. Do not
+report checks as passing before they exist.
 
 Build a tiny character-level language model to learn how GPT-style models work.
 Work through one understandable lesson at a time: tokenization, character
@@ -58,14 +58,13 @@ tiny-llm/
   src/tiny_llm/
     __init__.py              # Package marker; no work at import time
     __main__.py              # CLI entry point
-    tokenizer.py             # Planned first lesson: vocabulary, encode, decode
+    tokenizer.py             # Vocabulary, encode, decode
     bigram.py                # Later: counting and next-character probabilities
     model.py                 # Later: neural model and causal attention
     train.py                 # Later: batches, loss, and parameter updates
     generate.py              # Later: autoregressive sampling
   tests/
-    README.md                # Test conventions; no automated tests yet
-    test_tokenizer.py        # Planned first lesson tests
+    test_tokenizer.py        # Tokenizer behavioral tests
   data/                      # Planned small, explicitly selected text corpora
   runs/                      # Future ignored generated output and checkpoints
 ```
@@ -152,9 +151,7 @@ generation. Tests enforce each behavior when its lesson is implemented.
 ## Verification
 
 Run `uv sync --locked` from the repository root to create or synchronize the
-environment. Run the following commands from the same directory. The pytest
-command currently exits with code 5 because lesson tests do not exist yet;
-record that outcome as no tests collected, not a passing test suite.
+environment. Run the following commands from the same directory:
 
 ```sh
 uv run --locked python -m tiny_llm
@@ -178,9 +175,8 @@ use `torch.testing.assert_close` for expected numeric results, and test that
 causal predictions cannot depend on future tokens. Keep tests CPU-only, seeded
 when random, and independent of the network or large training jobs.
 
-Do not create placeholder tests to obtain a green result. An empty test suite
-before the first feature means tests are not yet available, not that they passed.
-State which checks ran and their actual outcome. Review module ownership and
+Do not create placeholder tests to obtain a green result. State which checks ran
+and their actual outcome. Review module ownership and
 dependency direction during code review; tooling does not enforce those rules.
 
 ## Consistency contract

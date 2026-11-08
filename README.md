@@ -7,9 +7,27 @@ and automatic gradients; we will write the model, training, and generation.
 
 ## Current state
 
-The Python package and development tools are ready. Running the package prints
-a workspace readiness message. The first lesson, the character tokenizer, is
-next; no model or training code is implemented yet.
+The first lesson is a character tokenizer. It builds a fixed vocabulary from
+`anna`, `bob`, and `ava`, then translates text into integer IDs and back. There
+is no model or training code yet.
+
+Running the package demonstrates the mapping:
+
+```text
+Vocabulary: {0: '.', 1: 'a', 2: 'b', 3: 'n', 4: 'o', 5: 'v'}
+Text: .anna.
+Token IDs: [0, 1, 3, 3, 1, 0]
+Decoded: .anna.
+```
+
+The boundary marker `.` always has ID 0; the remaining characters are sorted.
+The tokenizer preserves the supplied text exactly: it does not insert or remove
+boundaries. The demo explicitly supplies `.anna.`. Unknown characters and
+invalid token IDs raise `ValueError`; encoding never grows the vocabulary.
+
+Read `src/tiny_llm/tokenizer.py` in order: vocabulary construction, encoding,
+then decoding. The tests in `tests/test_tokenizer.py` show the expected behavior
+with small examples.
 
 ## Development
 
@@ -23,7 +41,7 @@ uv run --locked python -m tiny_llm --help
 ```
 
 Dependencies are locked in `uv.lock`. Ruff formats and lints the code, Pyrefly
-checks types, and pytest will run the lesson tests. Runtime code currently uses
+checks types, and pytest runs the lesson tests. Runtime code currently uses
 only the standard library; PyTorch will be added for the neural lessons.
 
 Point your editor at `.venv` and use the project-installed Pyrefly for type
@@ -37,11 +55,9 @@ uv run --locked pytest
 uv build
 ```
 
-There are no automated tests yet: pytest currently reports no tests collected
-and exits with code 5. Tests will arrive with the tokenizer lesson. To apply
-formatting, run `uv run --locked ruff format .`.
+To apply formatting, run `uv run --locked ruff format .`.
 
-Source code lives in `src/tiny_llm/`, and `tests/` is ready for the first lesson.
+Source code lives in `src/tiny_llm/`, and behavioral tests live in `tests/`.
 Add small text datasets under `data/` when needed; generated results belong in
 ignored `runs/`. Run locally on CPU to begin.
 
